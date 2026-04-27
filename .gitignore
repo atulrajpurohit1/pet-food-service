@@ -1,0 +1,42 @@
+# WordPress core
+/wp-admin/
+/wp-includes/
+/index.php
+/license.txt
+/readme.html
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-config-sample.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+
+# WordPress Content
+/wp-content/*
+!/wp-content/plugins/
+!/wp-content/themes/
+
+# Specific plugins/themes we want to keep
+/wp-content/plugins/*
+!/wp-content/plugins/pfs-headless-settings/
+/wp-content/themes/*
+!/wp-content/themes/twentytwentyfour/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env*
+
+# OS/IDEs
+.DS_Store
+.vscode/
+.idea/
+*.log
