@@ -1,7 +1,7 @@
 /**
- * PFS Headless Settings — Admin JS
+ * PFS Headless Control Hub — Admin JS
  *
- * Handles: color pickers, media uploader, dynamic nav-item rows.
+ * Handles: color pickers, dynamic social link rows, contact detail sync.
  */
 (function ($) {
   "use strict";
@@ -10,65 +10,72 @@
     /* ── Color Pickers ── */
     $(".pfs-color-picker").wpColorPicker();
 
-    /* ── Media Uploader for Logo ── */
-    $(".pfs-upload-logo").on("click", function (e) {
-      e.preventDefault();
-      var frame = wp.media({
-        title: "Select Logo",
-        button: { text: "Use as Logo" },
-        multiple: false,
-        library: { type: "image" },
-      });
-      frame.on("select", function () {
-        var attachment = frame.state().get("selection").first().toJSON();
-        $("#pfs_logo_url").val(attachment.url);
-        $("#pfs-logo-preview").html(
-          '<img src="' + attachment.url + '" style="max-height:60px;" />'
-        );
-      });
-      frame.open();
-    });
+    /* ── Social Links ── */
+    var $socialContainer = $("#pfs-social-links-container");
+    var $socialHidden = $("#pfs_social_links");
+    var socialItems = [];
 
-    /* ── Navigation Items ── */
-    var $container = $("#pfs-nav-items-container");
-    var $hidden = $("#pfs_nav_items");
-    var items = [];
-
-    // Parse existing items.
     try {
-      items = JSON.parse($hidden.val()) || [];
+      socialItems = JSON.parse($socialHidden.val()) || [];
     } catch (e) {
-      items = [];
+      socialItems = [];
     }
 
-    function renderRows() {
-      $container.empty();
-      items.forEach(function (item, i) {
+    function renderSocialRows() {
+      $socialContainer.empty();
+      socialItems.forEach(function (item, i) {
         var $row = $(
-          '<div class="pfs-nav-row" data-index="' + i + '">' +
-            '<span class="dashicons dashicons-move"></span>' +
-            '<input type="text" placeholder="Label" value="' + escAttr(item.label) + '" class="pfs-nav-label" />' +
-            '<input type="text" placeholder="/path" value="' + escAttr(item.href) + '" class="pfs-nav-href" />' +
-            '<button type="button" class="button pfs-remove-nav" title="Remove">&times;</button>' +
+          '<div class="pfs-social-row" data-index="' + i + '">' +
+            '<input type="text" placeholder="Platform (e.g. Facebook)" value="' + escAttr(item.platform) + '" class="pfs-social-platform" style="width:140px;" />' +
+            '<input type="url" placeholder="https://..." value="' + escAttr(item.url) + '" class="pfs-social-url" style="flex:1;" />' +
+            '<button type="button" class="button pfs-remove-social" title="Remove">&times;</button>' +
           '</div>'
         );
-        $container.append($row);
+        $socialContainer.append($row);
       });
-      syncHidden();
+      syncSocialHidden();
     }
 
-    function syncHidden() {
+    function syncSocialHidden() {
       var data = [];
-      $container.find(".pfs-nav-row").each(function () {
-        data.push({
-          label: $(this).find(".pfs-nav-label").val(),
-          href: $(this).find(".pfs-nav-href").val(),
-        });
+      $socialContainer.find(".pfs-social-row").each(function () {
+        var platform = $(this).find(".pfs-social-platform").val();
+        var url = $(this).find(".pfs-social-url").val();
+        if (platform || url) {
+          data.push({ platform: platform, url: url });
+        }
       });
-      items = data;
-      $hidden.val(JSON.stringify(data));
+      socialItems = data;
+      $socialHidden.val(JSON.stringify(data));
     }
 
+    $socialContainer.on("input", ".pfs-social-platform, .pfs-social-url", syncSocialHidden);
+
+    $socialContainer.on("click", ".pfs-remove-social", function () {
+      $(this).closest(".pfs-social-row").remove();
+      syncSocialHidden();
+    });
+
+    $("#pfs-add-social").on("click", function () {
+      socialItems.push({ platform: "", url: "" });
+      renderSocialRows();
+      $socialContainer.find(".pfs-social-row:last .pfs-social-platform").focus();
+    });
+
+    /* ── Contact Details ── */
+    var $contactHidden = $("#pfs_contact_details");
+    
+    function syncContactHidden() {
+      var data = {};
+      $(".pfs-contact-input").each(function() {
+        data[$(this).data('key')] = $(this).val();
+      });
+      $contactHidden.val(JSON.stringify(data));
+    }
+
+    $(".pfs-contact-input").on("input", syncContactHidden);
+
+    /* ── Utilities ── */
     function escAttr(s) {
       return String(s || "")
         .replace(/&/g, "&amp;")
@@ -77,35 +84,13 @@
         .replace(/>/g, "&gt;");
     }
 
-    // Live-update hidden field on input.
-    $container.on("input", ".pfs-nav-label, .pfs-nav-href", syncHidden);
+    /* ── Init ── */
+    renderSocialRows();
 
-    // Remove button.
-    $container.on("click", ".pfs-remove-nav", function () {
-      var idx = $(this).closest(".pfs-nav-row").data("index");
-      items.splice(idx, 1);
-      renderRows();
+    /* ── Final Sync before Submit ── */
+    $("#pfs-headless-form").on("submit", function() {
+      syncSocialHidden();
+      syncContactHidden();
     });
-
-    // Add button.
-    $("#pfs-add-nav-item").on("click", function () {
-      items.push({ label: "", href: "/" });
-      renderRows();
-      $container.find(".pfs-nav-row:last .pfs-nav-label").focus();
-    });
-
-    // Drag-to-reorder using simple swap (jQuery UI sortable light).
-    if ($.fn.sortable) {
-      $container.sortable({
-        handle: ".dashicons-move",
-        update: syncHidden,
-      });
-    }
-
-    // Initial render.
-    renderRows();
-
-    /* ── Sync hidden before submit ── */
-    $("#pfs-headless-form").on("submit", syncHidden);
   });
 })(jQuery);
