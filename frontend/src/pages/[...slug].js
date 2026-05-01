@@ -25,12 +25,19 @@ export async function getStaticPaths() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/headless/v1/site`);
     const data = await res.json();
 
-    const staticPages = ['home', 'about', 'categories', 'contact'];
+    const staticPages = [
+      'home', 'about', 'categories', 'contact', 
+      'profile', 'search', 'privacy-policy', 'terms-of-use'
+    ];
     
     const paths = data.pages
-      .filter(page => !staticPages.includes(page.slug))
       .map(page => ({
-        params: { slug: page.slug.split('/') },
+        ...page,
+        normalizedSlug: page.slug.replace(/^\/|\/$/g, '') // Remove leading/trailing slashes
+      }))
+      .filter(page => page.normalizedSlug && !staticPages.includes(page.normalizedSlug))
+      .map(page => ({
+        params: { slug: page.normalizedSlug.split('/') },
       }));
 
     return {
@@ -50,7 +57,10 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/headless/v1/site`);
     const data = await res.json();
 
-    const page = data.pages.find(p => p.slug === slug);
+    const page = data.pages.find(p => {
+      const normalized = p.slug.replace(/^\/|\/$/g, '');
+      return normalized === slug;
+    });
 
     if (!page) {
       return {
