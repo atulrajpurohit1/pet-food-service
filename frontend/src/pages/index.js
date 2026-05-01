@@ -6,7 +6,7 @@ export default function Home({ page, settings }) {
   return (
     <Layout>
       <Head>
-        <title>{settings?.siteTitle || 'PawFresh'} | Premium Pet Nutrition</title>
+        <title>{`${settings?.siteTitle || 'PawFresh'} | Premium Pet Nutrition`}</title>
         <meta name="description" content={settings?.siteTagline || 'Premium pet nutrition.'} />
       </Head>
       <main className="bg-white">

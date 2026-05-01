@@ -35,7 +35,7 @@ export default function Contact({ page, settings }) {
   return (
     <Layout>
       <Head>
-        <title>{heroData.title || 'Contact Us'} | {settings?.siteTitle || 'PawFresh'}</title>
+        <title>{`${heroData.title || 'Contact Us'} | ${settings?.siteTitle || 'PawFresh'}`}</title>
       </Head>
       <main className="bg-white min-h-screen">
         {/* Hero from sections */}

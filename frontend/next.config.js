@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'mratulrajpurohit1-qmtif-studio.wp.build',
+      },
     ],
   },
 };

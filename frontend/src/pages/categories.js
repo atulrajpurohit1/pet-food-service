@@ -6,7 +6,7 @@ export default function Categories({ page, settings }) {
   return (
     <Layout>
       <Head>
-        <title>{page?.title || 'Categories'} | {settings?.siteTitle || 'PawFresh'}</title>
+        <title>{`${page?.title || 'Categories'} | ${settings?.siteTitle || 'PawFresh'}`}</title>
       </Head>
       <main className="bg-white min-h-screen">
         <SectionRenderer sections={page?.sections} settings={settings} />
