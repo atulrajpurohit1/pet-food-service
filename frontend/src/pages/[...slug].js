@@ -25,8 +25,10 @@ export async function getStaticPaths() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_URL}/wp-json/headless/v1/site`);
     const data = await res.json();
 
+    const staticPages = ['home', 'about', 'categories', 'contact'];
+    
     const paths = data.pages
-      .filter(page => page.slug !== 'home')
+      .filter(page => !staticPages.includes(page.slug))
       .map(page => ({
         params: { slug: page.slug.split('/') },
       }));
