@@ -3,19 +3,39 @@ export default function TeamSection({ data }) {
   const items = data.items || [];
 
   return (
-    <section className="py-32">
-      <div className="max-w-7xl mx-auto px-4 text-center">
+    <section className="py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
         {data.title && (
-          <h2 className="text-4xl font-black text-gray-900 mb-20 uppercase tracking-tight italic">{data.title}</h2>
+          <div className="text-center mb-16">
+            <h2 
+              className="text-[32px] md:text-[40px] font-bold text-[#1a1a2e] tracking-[-0.03em]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              {data.title}
+            </h2>
+            <div className="w-12 h-[2px] bg-[#3a6186]/30 mx-auto mt-6" />
+          </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {items.map((person, i) => (
-            <div key={i} className="space-y-6 group">
-              <div className="aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-2xl grayscale group-hover:grayscale-0 transition-all duration-700">
-                <img src={person.image} alt={person.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <div key={i} className="group text-center">
+              <div className="relative mb-6 mx-auto w-full max-w-[320px]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3a6186]/15 to-[#89B4D4]/10 rounded-[28px] rotate-3 scale-[1.02] group-hover:rotate-1 transition-transform duration-700" />
+                <div className="relative aspect-[3/4] rounded-[28px] overflow-hidden shadow-lg shadow-[#1a1a2e]/8">
+                  <img 
+                    src={person.image} 
+                    alt={person.name} 
+                    className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                  />
+                </div>
               </div>
-              <h4 className="text-xl font-black text-gray-900 uppercase tracking-tight">{person.name}</h4>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">{person.role}</p>
+              <h4 
+                className="text-[18px] font-semibold text-[#1a1a2e] tracking-[-0.02em] mb-1"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
+                {person.name}
+              </h4>
+              <p className="text-[12px] text-[#3a6186]/60 font-medium tracking-[0.05em]">{person.role}</p>
             </div>
           ))}
         </div>

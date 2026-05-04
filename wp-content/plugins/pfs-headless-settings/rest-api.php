@@ -1,6 +1,6 @@
 <?php
 /**
- * PFS Headless Settings — REST API
+ * Agoura Feed Headless Settings — REST API
  *
  * Endpoint: GET /wp-json/headless/v1/settings
  */

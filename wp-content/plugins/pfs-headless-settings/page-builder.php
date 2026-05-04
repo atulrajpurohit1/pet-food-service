@@ -103,7 +103,7 @@ add_action( 'admin_enqueue_scripts', 'pfs_pb_admin_assets' );
  * ──────────────────────────────────────────── */
 
 function pfs_pb_seed_defaults() {
-    $slugs = [ 'home', 'about', 'categories', 'contact' ];
+    $slugs = [ 'home', 'about', 'categories', 'contact', 'profile' ];
     foreach ( $slugs as $slug ) {
         $page = get_page_by_path( $slug );
         if ( ! $page ) continue;
@@ -163,12 +163,12 @@ function pfs_pb_get_defaults_for_slug( $slug ) {
             [
                 'type' => 'cards_grid',
                 'data' => [
-                    'title' => 'Why Choose PawFresh?',
+                    'title' => 'Why Choose Agoura Feed?',
                     'items' => [
-                        [ 'title' => 'Best Quality', 'icon' => '💎', 'description' => 'We ensure only the best ingredients for your pets.' ],
-                        [ 'title' => 'Fast Delivery', 'icon' => '🚚', 'description' => 'Fresh food delivered right to your doorstep.' ],
-                        [ 'title' => 'Organic Ingredients', 'icon' => '🍃', 'description' => '100% natural and organic components.' ],
-                        [ 'title' => 'Vet Recommended', 'icon' => '🩺', 'description' => 'Approved by leading pet health experts.' ],
+                        [ 'title' => 'Best Quality', 'image' => 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=200', 'description' => 'We ensure only the best ingredients for your pets.' ],
+                        [ 'title' => 'Fast Delivery', 'image' => 'https://images.unsplash.com/photo-1586880244406-556ebe35f282?auto=format&fit=crop&q=80&w=200', 'description' => 'Fresh food delivered right to your doorstep.' ],
+                        [ 'title' => 'Organic Ingredients', 'image' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=200', 'description' => '100% natural and organic components.' ],
+                        [ 'title' => 'Vet Recommended', 'image' => 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&q=80&w=200', 'description' => 'Approved by leading pet health experts.' ],
                     ],
                 ],
             ],
@@ -189,7 +189,7 @@ function pfs_pb_get_defaults_for_slug( $slug ) {
             [
                 'type' => 'hero',
                 'data' => [
-                    'tag'      => 'About PawFresh',
+                    'tag'      => 'About Agoura Feed',
                     'title'    => 'About Us',
                     'subtitle' => 'Giving the best care to your pets since 2020',
                     'image'    => 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=800',
@@ -295,11 +295,44 @@ function pfs_pb_get_defaults_for_slug( $slug ) {
             [
                 'type' => 'contact_info',
                 'data' => [
-                    'phone'       => '+1 (555) 000-PAWS',
-                    'email'       => 'hello@pawfresh.com',
-                    'address'     => '123 Pet Lane, Nutrition City',
+                    'phone'       => '(818) 889-1989',
+                    'email'       => 'agourafeed@yahoo.com',
+                    'address'     => '28327 Agoura Rd, Agoura Hills, CA 91301-2405',
                     'urgentTitle' => 'Need Urgent Help?',
                     'urgentText'  => 'Our support lines are open 24/7 for any pet emergencies.',
+                ],
+            ],
+        ],
+
+        'profile' => [
+            [
+                'type' => 'hero',
+                'data' => [
+                    'tag'      => 'Your Account',
+                    'title'    => 'My Profile',
+                    'subtitle' => 'Manage your account details and personalize your pet nutrition preferences.',
+                    'image'    => '',
+                    'ctaPrimaryLabel' => '',
+                    'ctaPrimaryHref'  => '',
+                    'ctaSecondaryLabel' => '',
+                    'ctaSecondaryHref'  => '',
+                ],
+            ],
+            [
+                'type' => 'text_block',
+                'data' => [
+                    'title' => 'Welcome to Agoura Feed',
+                    'body'  => 'Your account gives you access to personalized nutrition recommendations, order tracking, and exclusive member benefits. Keep your profile up to date so we can serve you and your pets better.',
+                ],
+            ],
+            [
+                'type' => 'banner',
+                'data' => [
+                    'title'    => 'Need Help With Your Account?',
+                    'subtitle' => 'Our support team is always ready to assist you with any account-related questions.',
+                    'image'    => '',
+                    'ctaLabel' => 'Contact Support',
+                    'ctaHref'  => '/contact',
                 ],
             ],
         ],

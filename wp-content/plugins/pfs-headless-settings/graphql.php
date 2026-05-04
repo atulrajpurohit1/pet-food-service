@@ -49,7 +49,7 @@ function pfs_hs_register_graphql() {
 		'resolve'     => function () {
 			$nav = json_decode( get_option( 'pfs_nav_items', '[]' ), true ) ?: [];
 			return [
-				'siteTitle'   => get_option( 'pfs_site_title', 'PAWFRESH' ),
+				'siteTitle'   => get_option( 'pfs_site_title', 'Agoura Feed' ),
 				'siteTagline' => get_option( 'pfs_site_tagline', 'Premium Pet Nutrition' ),
 				'logoUrl'     => get_option( 'pfs_logo_url', '' ),
 				'colors'      => [

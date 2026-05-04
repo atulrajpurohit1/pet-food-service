@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import Head from 'next/head';
 import Link from 'next/link';
 
 export default function PrivacyPolicy() {
@@ -66,32 +67,48 @@ export default function PrivacyPolicy() {
 
   return (
     <Layout>
-      {/* Page Hero */}
-      <section className="bg-gray-50 py-24 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-8 uppercase tracking-tight">Privacy <span className="text-green-600">Policy</span></h1>
-          <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
+      <Head>
+        <title>Privacy Policy | Agoura Feed</title>
+      </Head>
+
+      {/* Hero */}
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#252542] to-[#1a1a2e]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#3a6186]/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 text-center">
+          <h1 
+            className="text-[40px] md:text-[56px] font-bold text-white mb-4 tracking-[-0.03em]"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            Privacy <span className="text-[#89B4D4]">Policy</span>
+          </h1>
+          <p className="text-white/50 text-[15px] max-w-xl mx-auto leading-[1.7]">
             Your privacy is important to us. This policy outlines how we collect, use, and protect your information.
           </p>
-          <p className="text-sm text-gray-400 mt-4">Last updated: April 2026</p>
+          <p className="text-white/25 text-[12px] mt-4">Last updated: April 2026</p>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto space-y-16">
+      <section className="py-20 md:py-28 bg-[#FDFCFA]">
+        <div className="max-w-3xl mx-auto px-5 sm:px-8 space-y-14">
           {sections.map((section, index) => (
-            <div key={section.title} className="group">
-              <div className="flex items-start gap-6">
-                <span className="flex-shrink-0 w-12 h-12 bg-green-100 text-green-700 rounded-2xl flex items-center justify-center font-black text-lg">
+            <div key={section.title}>
+              <div className="flex items-start gap-5">
+                <span className="flex-shrink-0 w-10 h-10 bg-[#3a6186]/8 text-[#3a6186] rounded-xl flex items-center justify-center font-semibold text-[14px]">
                   {index + 1}
                 </span>
-                <div>
-                  <h2 className="text-2xl font-black text-gray-900 mb-6 tracking-tight">{section.title}</h2>
-                  <ul className="space-y-4">
+                <div className="flex-1">
+                  <h2 
+                    className="text-[20px] font-bold text-[#1a1a2e] mb-5 tracking-[-0.02em]"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
+                    {section.title}
+                  </h2>
+                  <ul className="space-y-3">
                     {section.content.map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-gray-600 leading-relaxed">
-                        <span className="text-green-500 mt-1.5 flex-shrink-0">•</span>
+                      <li key={i} className="flex items-start gap-3 text-[#1a1a2e]/55 text-[14px] leading-[1.7]">
+                        <span className="text-[#3a6186]/40 mt-1.5 flex-shrink-0 text-[10px]">●</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -99,20 +116,28 @@ export default function PrivacyPolicy() {
                 </div>
               </div>
               {index < sections.length - 1 && (
-                <div className="mt-12 border-b border-gray-100" />
+                <div className="divider-gradient mt-12" />
               )}
             </div>
           ))}
 
-          {/* Contact Section */}
-          <div className="bg-gray-50 p-12 rounded-[2rem] border border-gray-100">
-            <h2 className="text-2xl font-black text-gray-900 mb-4 tracking-tight">Questions About Your Privacy?</h2>
-            <p className="text-gray-600 leading-relaxed mb-6">
+          {/* Contact CTA */}
+          <div className="bg-[#f7f5f2] p-10 rounded-[24px] border border-[#e8e4de]/60">
+            <h2 
+              className="text-[20px] font-bold text-[#1a1a2e] mb-3 tracking-[-0.02em]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              Questions About Your Privacy?
+            </h2>
+            <p className="text-[#1a1a2e]/50 text-[14px] leading-[1.7] mb-6">
               If you have any questions or concerns about this privacy policy or our data practices, please don&apos;t hesitate to reach out.
             </p>
-            <Link href="/contact" className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-xl transition-colors shadow-lg shadow-green-900/20">
+            <Link 
+              href="/contact" 
+              className="group inline-flex items-center gap-2 bg-[#1a1a2e] text-white px-7 py-3 rounded-full text-[13px] font-semibold hover:bg-[#3a6186] transition-all duration-400 shadow-lg shadow-[#1a1a2e]/10"
+            >
               Contact Us
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>

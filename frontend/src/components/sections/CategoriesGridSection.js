@@ -5,21 +5,39 @@ export default function CategoriesGridSection({ data }) {
   const items = data.items || [];
 
   return (
-    <section className="py-24 bg-gray-50/30">
-      <div className="max-w-7xl mx-auto px-4 text-center">
+    <section className="py-20 md:py-28 bg-[#f7f5f2]/40">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
         {data.title && (
-          <h2 className="text-4xl font-black text-gray-900 mb-16 tracking-tight italic uppercase">{data.title}</h2>
+          <div className="text-center mb-16">
+            <h2 
+              className="text-[32px] md:text-[40px] font-bold text-[#1a1a2e] tracking-[-0.03em]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              {data.title}
+            </h2>
+            <div className="w-12 h-[2px] bg-[#3a6186]/30 mx-auto mt-6" />
+          </div>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((cat, i) => (
-            <Link href="/categories" key={i} className="group bg-white p-6 rounded-[2.5rem] border border-gray-100 hover:shadow-2xl transition-all">
-              <div className="aspect-square rounded-[2rem] overflow-hidden mb-6">
-                <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <Link 
+              href="/categories" 
+              key={i} 
+              className="group card-hover bg-white rounded-[24px] border border-[#e8e4de]/60 overflow-hidden"
+            >
+              <div className="aspect-square overflow-hidden">
+                <img 
+                  src={cat.image} 
+                  alt={cat.name} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" 
+                />
               </div>
-              <h3 className="font-black text-gray-900 uppercase tracking-tight mb-2">{cat.name}</h3>
-              {cat.subtitle && (
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{cat.subtitle}</p>
-              )}
+              <div className="p-5 text-center">
+                <h3 className="font-semibold text-[#1a1a2e] text-[15px] tracking-[-0.02em] mb-1">{cat.name}</h3>
+                {cat.subtitle && (
+                  <p className="text-[12px] text-[#1a1a2e]/35 font-medium">{cat.subtitle}</p>
+                )}
+              </div>
             </Link>
           ))}
         </div>

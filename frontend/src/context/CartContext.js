@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('pawfresh_cart');
+    const savedCart = localStorage.getItem('agourafeed_cart');
     if (savedCart) {
       setCart(JSON.parse(savedCart));
     }
@@ -15,7 +15,7 @@ export function CartProvider({ children }) {
 
   // Save cart to localStorage on change
   useEffect(() => {
-    localStorage.setItem('pawfresh_cart', JSON.stringify(cart));
+    localStorage.setItem('agourafeed_cart', JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product) => {

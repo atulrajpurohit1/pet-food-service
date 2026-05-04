@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: PFS Headless Settings
+ * Plugin Name: Agoura Feed Headless Settings
  * Description: Global headless site settings exposed via REST API & WPGraphQL with live sync to the Next.js frontend.
  * Version: 1.0.0
- * Author: PawFresh Dev
+ * Author: Agoura Feed Dev
  * Text Domain: pfs-headless
  */
 
@@ -71,6 +71,11 @@ function pfs_hs_ensure_headless_pages() {
 			'content' => '<!-- wp:paragraph -->\n<p>We\'d love to hear from you. Our team of experts is here to help you choose the best nutrition for your pet. Get in touch with our pet nutrition experts.</p>\n<!-- /wp:paragraph -->',
 			'excerpt' => 'We\'d love to hear from you. Our team of experts is here to help.'
 		],
+		'profile' => [
+			'title'   => 'My Profile',
+			'content' => '<!-- wp:paragraph -->\n<p>Manage your account, update your details, and personalize your pet nutrition preferences.</p>\n<!-- /wp:paragraph -->',
+			'excerpt' => 'Manage your Agoura Feed account and pet preferences.'
+		],
 	];
 
 	foreach ( $pages as $slug => $data ) {
@@ -124,9 +129,9 @@ function pfs_hs_register_settings() {
 		'type'              => 'string',
 		'sanitize_callback' => 'pfs_hs_sanitize_json',
 		'default'           => wp_json_encode( [
-			'email'   => 'hello@pawfresh.com',
-			'phone'   => '+1 (555) 000-PAWS',
-			'address' => '123 Pet Lane, Nutrition City',
+			'email'   => 'agourafeed@yahoo.com',
+			'phone'   => '(818) 889-1989',
+			'address' => '28327 Agoura Rd, Agoura Hills, CA 91301-2405',
 		] ),
 	] );
 
@@ -137,7 +142,7 @@ function pfs_hs_register_settings() {
 
 	// ── Sync ──
 	register_setting( 'pfs_headless_settings', 'pfs_frontend_url', [ 'type' => 'string', 'default' => 'http://localhost:3000' ] );
-	register_setting( 'pfs_headless_settings', 'pfs_revalidation_secret', [ 'type' => 'string', 'default' => 'pawfresh-revalidation-2026' ] );
+	register_setting( 'pfs_headless_settings', 'pfs_revalidation_secret', [ 'type' => 'string', 'default' => 'agourafeed-revalidation-2026' ] );
 }
 add_action( 'admin_init', 'pfs_hs_register_settings' );
 
@@ -226,7 +231,7 @@ function pfs_hs_render_settings_page() {
 	<div class="wrap">
 		<h1 style="display:flex;align-items:center;gap:12px;">
 			<span class="dashicons dashicons-admin-site-alt3" style="font-size:32px;width:32px;height:32px;color:#16a34a;"></span>
-			<?php esc_html_e( 'Headless Control Hub', 'pfs-headless' ); ?>
+			<?php esc_html_e( 'Agoura Feed Control Hub', 'pfs-headless' ); ?>
 		</h1>
 		<p class="description" style="margin-bottom:30px;font-size:14px;">
 			<?php esc_html_e( 'Manage your entire Next.js frontend from one place. We reuse native WordPress features whenever possible.', 'pfs-headless' ); ?>

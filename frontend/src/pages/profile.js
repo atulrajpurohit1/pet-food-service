@@ -3,10 +3,11 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import SectionRenderer from '../components/SectionRenderer';
 
 const WP_API_URL = `${process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://localhost:8882'}/wp-json`;
 
-export default function Profile() {
+export default function Profile({ page, settings }) {
   const { user, token, loading: authLoading, login, logout, updateUser } = useAuth();
   const router = useRouter();
   const fileInputRef = useRef(null);
@@ -16,6 +17,11 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+
+  // Extract sections from WordPress
+  const heroSection = page?.sections?.find(s => s.type === 'hero');
+  const otherSections = page?.sections?.filter(s => s.type !== 'hero') || [];
+  const heroData = heroSection?.data || {};
 
   useEffect(() => {
     if (user) {
@@ -89,7 +95,6 @@ export default function Profile() {
       return;
     }
     
-    // Simulate account creation
     const newUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -101,213 +106,224 @@ export default function Profile() {
     setMessage({ type: 'success', text: 'Welcome! Your account is ready.' });
   };
 
-  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-white"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div></div>;
+  if (authLoading) return (
+    <div className="min-h-screen flex items-center justify-center bg-[#FDFCFA]">
+      <div className="w-8 h-8 rounded-full border-2 border-[#3a6186]/20 border-t-[#3a6186] animate-spin"></div>
+    </div>
+  );
 
+  // ─── Registration Form (Not Logged In) ───────────────────
   if (!user) return (
     <Layout>
-      <Head><title>Join PawFresh | Create Your Profile</title></Head>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50/50 py-24 px-4">
-        <div className="max-w-xl w-full bg-white rounded-[4rem] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
-          
-          <div className="p-12 md:p-16 text-center">
-            <div className="inline-block p-4 bg-primary/10 rounded-full mb-6">
-              <span className="text-4xl">🐾</span>
+      <Head><title>{`${heroData.title || 'Join Agoura Feed'} | ${settings?.siteTitle || 'Agoura Feed'}`}</title></Head>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FDFCFA] py-24 px-5">
+        <div className="max-w-lg w-full">
+          <div className="bg-white rounded-[28px] shadow-xl shadow-[#1a1a2e]/5 border border-[#e8e4de]/60 overflow-hidden p-10 md:p-14">
+            
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-[#3a6186]/8 rounded-2xl mb-5">
+                <span className="text-2xl">🐾</span>
+              </div>
+              <h1 
+                className="text-[28px] font-bold text-[#1a1a2e] tracking-[-0.03em] mb-2"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
+                {heroData.title || 'Join Agoura Feed'}
+              </h1>
+              <p className="text-[#1a1a2e]/35 text-[13px]">{heroData.subtitle || 'Create your pet parent profile today'}</p>
             </div>
-            <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tight italic mb-2">Join PawFresh</h1>
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mb-12">Create your pet parent profile today</p>
             
             {message.text && (
-              <div className={`mb-10 p-4 rounded-2xl text-xs font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600 animate-shake'}`}>
+              <div className={`mb-8 p-4 rounded-xl text-[13px] font-medium text-center ${
+                message.type === 'success' ? 'bg-[#3a6186]/8 text-[#3a6186]' : 'bg-red-50 text-red-500'
+              }`}>
                 {message.text}
               </div>
             )}
 
-            <form onSubmit={handleRegister} className="space-y-8">
-              <div className="flex flex-col items-center mb-10">
-                 <div className="relative group">
-                    <img 
-                      src={avatarPreview || 'https://via.placeholder.com/200?text=Photo'} 
-                      className="w-32 h-32 rounded-[2.5rem] object-cover border-4 border-gray-50 shadow-lg bg-gray-50"
-                    />
-                    <button 
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="absolute inset-0 bg-primary/80 rounded-[2.5rem] flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
-                    >
-                      <span className="text-lg mb-1">📸</span>
-                      <span className="text-[8px] font-black uppercase tracking-widest">Optional</span>
-                    </button>
-                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => setAvatarPreview(reader.result);
-                        reader.readAsDataURL(file);
-                      }
-                    }} />
-                 </div>
-                 <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest mt-4">Profile Photo (Optional)</p>
+            <form onSubmit={handleRegister} className="space-y-6">
+              {/* Avatar Upload */}
+              <div className="flex flex-col items-center mb-4">
+                <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                  <img 
+                    src={avatarPreview || 'https://via.placeholder.com/200?text=Photo'} 
+                    className="w-24 h-24 rounded-2xl object-cover border-2 border-[#e8e4de]/60 bg-[#f7f5f2]"
+                  />
+                  <div className="absolute inset-0 bg-[#3a6186]/70 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                    <span className="text-white text-lg">📸</span>
+                  </div>
+                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => setAvatarPreview(reader.result);
+                      reader.readAsDataURL(file);
+                    }
+                  }} />
+                </div>
+                <p className="text-[11px] text-[#1a1a2e]/25 font-medium mt-3">Profile photo (optional)</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-left space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">First Name</label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">First Name</label>
                   <input 
-                    type="text" 
-                    placeholder="John"
+                    type="text" placeholder="John"
                     onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                    className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900 placeholder:text-gray-200"
+                    className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/20"
                   />
                 </div>
-                <div className="text-left space-y-2">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Last Name</label>
+                <div className="space-y-2">
+                  <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">Last Name</label>
                   <input 
-                    type="text" 
-                    placeholder="Doe"
+                    type="text" placeholder="Doe"
                     onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                    className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900 placeholder:text-gray-200"
+                    className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/20"
                   />
                 </div>
               </div>
 
-              <div className="text-left space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Email Address</label>
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">Email Address</label>
                 <input 
-                  type="email" 
-                  placeholder="john@example.com"
+                  type="email" placeholder="john@example.com"
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900 placeholder:text-gray-200"
+                  className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/20"
                 />
               </div>
 
               <button 
                 type="submit" 
-                className="w-full bg-gray-900 text-white py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl hover:bg-primary transition-all mt-6"
+                className="w-full bg-[#1a1a2e] text-white py-4 rounded-xl text-[14px] font-semibold shadow-lg shadow-[#1a1a2e]/10 hover:bg-[#3a6186] transition-all duration-400 mt-2"
               >
                 Create My Account
               </button>
             </form>
           </div>
-
         </div>
       </div>
     </Layout>
   );
 
+  // ─── Profile View (Logged In) ────────────────────────
   return (
     <Layout>
-      <Head><title>My Profile | PawFresh</title></Head>
+      <Head><title>{`${heroData.title || 'My Profile'} | ${settings?.siteTitle || 'Agoura Feed'}`}</title></Head>
 
-      <section className="bg-gray-50/50 min-h-screen py-24 px-4">
+      <section className="bg-[#FDFCFA] min-h-screen py-20 px-5">
         <div className="max-w-2xl mx-auto">
           
-          <div className="bg-white rounded-[4rem] shadow-2xl shadow-gray-200/60 border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-[28px] shadow-xl shadow-[#1a1a2e]/5 border border-[#e8e4de]/60 overflow-hidden">
             
-            {/* Header Aesthetic */}
-            <div className="h-48 bg-gray-900 relative">
-               <div className="absolute inset-0 opacity-20">
-                  <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover" />
-               </div>
-               <div className="absolute -bottom-20 left-1/2 -translate-x-1/2">
-                  <div className="relative group">
-                    <img 
-                      src={avatarPreview || 'https://via.placeholder.com/200'} 
-                      className="w-40 h-40 rounded-[3rem] object-cover border-8 border-white shadow-2xl bg-white"
-                    />
-                    {isEditing && (
-                      <button 
-                        onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 bg-primary/80 rounded-[3rem] flex flex-col items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
-                      >
-                        <span className="text-xl mb-1">📸</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest">Update Photo</span>
-                      </button>
-                    )}
-                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => setAvatarPreview(reader.result);
-                        reader.readAsDataURL(file);
-                      }
-                    }} />
-                  </div>
+            {/* Cover + Avatar */}
+            <div className="h-40 bg-gradient-to-br from-[#3a6186] to-[#89B4D4] relative">
+               <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+                 <div className="relative group">
+                   <img 
+                     src={avatarPreview || 'https://via.placeholder.com/200'} 
+                     className="w-32 h-32 rounded-[24px] object-cover border-4 border-white shadow-xl bg-white"
+                   />
+                   {isEditing && (
+                     <button 
+                       onClick={() => fileInputRef.current?.click()}
+                       className="absolute inset-0 bg-[#3a6186]/70 rounded-[24px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                     >
+                       <span className="text-white text-lg">📸</span>
+                     </button>
+                   )}
+                   <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => {
+                     const file = e.target.files[0];
+                     if (file) {
+                       const reader = new FileReader();
+                       reader.onloadend = () => setAvatarPreview(reader.result);
+                       reader.readAsDataURL(file);
+                     }
+                   }} />
+                 </div>
                </div>
             </div>
 
-            <div className="pt-28 pb-16 px-10 md:px-20 text-center">
+            <div className="pt-24 pb-12 px-10 md:px-16 text-center">
               
               {!isEditing ? (
-                <div className="animate-in fade-in zoom-in-95 duration-500">
-                  <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tight italic mb-2">
+                <div>
+                  <h1 
+                    className="text-[28px] font-bold text-[#1a1a2e] tracking-[-0.03em] mb-1"
+                    style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                  >
                     {user.firstName} {user.lastName}
                   </h1>
-                  <p className="text-primary font-black uppercase tracking-[0.2em] text-xs mb-10">{user.email}</p>
+                  <p className="text-[#3a6186] text-[13px] font-medium mb-8">{user.email}</p>
                   
                   {message.text && (
-                    <div className={`mb-8 p-4 rounded-2xl text-xs font-black uppercase tracking-widest ${message.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600 animate-shake'}`}>
+                    <div className={`mb-8 p-4 rounded-xl text-[13px] font-medium ${
+                      message.type === 'success' ? 'bg-[#3a6186]/8 text-[#3a6186]' : 'bg-red-50 text-red-500'
+                    }`}>
                       {message.text}
                     </div>
                   )}
 
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3">
                     <button 
                       onClick={() => setIsEditing(true)}
-                      className="w-full bg-gray-900 text-white py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl hover:bg-primary transition-all"
+                      className="w-full bg-[#1a1a2e] text-white py-4 rounded-xl text-[14px] font-semibold shadow-lg shadow-[#1a1a2e]/10 hover:bg-[#3a6186] transition-all duration-400"
                     >
                       Edit Account Details
                     </button>
-                    <button onClick={logout} className="text-gray-400 hover:text-red-500 font-bold uppercase tracking-widest text-[10px] mt-4 transition-colors">
-                      Log Out from Store
+                    <button 
+                      onClick={logout} 
+                      className="text-[#1a1a2e]/30 hover:text-red-400 text-[12px] font-medium mt-2 transition-colors"
+                    >
+                      Log Out
                     </button>
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSave} className="animate-in slide-in-from-bottom-4 duration-500 space-y-8">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2 text-left">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">First Name</label>
+                <form onSubmit={handleSave} className="space-y-5 text-left">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">First Name</label>
                       <input 
                         type="text" 
                         value={formData.firstName}
                         onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                        className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900"
+                        className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all"
                       />
                     </div>
-                    <div className="space-y-2 text-left">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Last Name</label>
+                    <div className="space-y-2">
+                      <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">Last Name</label>
                       <input 
                         type="text" 
                         value={formData.lastName}
                         onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                        className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900"
+                        className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all"
                       />
                     </div>
                   </div>
-                  <div className="space-y-2 text-left">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-4">Email Address</label>
+                  <div className="space-y-2">
+                    <label className="text-[11px] text-[#1a1a2e]/35 font-semibold ml-1">Email Address</label>
                     <input 
                       type="email" 
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full bg-gray-50 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary font-bold text-gray-900"
+                      className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-xl px-4 py-3.5 text-[14px] font-medium outline-none transition-all"
                     />
                   </div>
 
-                  <div className="pt-8 flex flex-col gap-4">
+                  <div className="pt-4 flex flex-col gap-3">
                     <button 
                       type="submit" 
                       disabled={isUpdating}
-                      className="w-full bg-primary text-white py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-primary/20 hover:bg-gray-900 transition-all disabled:opacity-50"
+                      className="w-full bg-[#3a6186] text-white py-4 rounded-xl text-[14px] font-semibold shadow-lg shadow-[#3a6186]/15 hover:bg-[#1a1a2e] transition-all duration-400 disabled:opacity-50"
                     >
-                      {isUpdating ? 'Saving Changes...' : 'Save & Update Profile'}
+                      {isUpdating ? 'Saving...' : 'Save Changes'}
                     </button>
                     <button 
                       type="button" 
                       onClick={() => { setIsEditing(false); setAvatarPreview(user.avatar); }}
-                      className="text-gray-400 hover:text-gray-900 font-black uppercase tracking-widest text-[10px] transition-colors"
+                      className="text-[#1a1a2e]/30 hover:text-[#1a1a2e] text-[12px] font-medium transition-colors"
                     >
-                      Cancel Changes
+                      Cancel
                     </button>
                   </div>
                 </form>
@@ -316,22 +332,29 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="mt-12 text-center">
-             <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Personalized Nutrition for your Best Friend</p>
-          </div>
+          <p className="text-center text-[11px] text-[#1a1a2e]/20 font-medium mt-8 tracking-wide">
+            Personalized Nutrition for your Best Friend
+          </p>
 
         </div>
       </section>
-      <style jsx>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        .animate-shake {
-          animation: shake 0.2s ease-in-out 0s 2;
-        }
-      `}</style>
+
+      {/* Render additional CMS sections below the profile card */}
+      {otherSections.length > 0 && (
+        <SectionRenderer sections={otherSections} settings={settings} />
+      )}
     </Layout>
   );
+}
+
+export async function getStaticProps() {
+  try {
+    const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://localhost:8882').replace(/\/$/, '');
+    const res = await fetch(`${wpUrl}/wp-json/headless/v1/site`);
+    const data = await res.json();
+    const profilePage = data.pages.find(p => p.slug === 'profile');
+    return { props: { page: profilePage || null, settings: data.settings || {} }, revalidate: 60 };
+  } catch (error) {
+    return { props: { page: null, settings: {} }, revalidate: 60 };
+  }
 }

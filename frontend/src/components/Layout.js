@@ -14,15 +14,15 @@ export default function Layout({ children }) {
 
   return (
     <div 
-      className="min-h-screen flex flex-col bg-white font-sans text-gray-900 selection:bg-primary selection:text-white"
+      className="min-h-screen flex flex-col bg-[#FDFCFA] font-sans text-[#1a1a2e]"
       style={hasMounted ? {
-        '--color-primary': colors.primary || '#16a34a',
-        '--color-secondary': colors.secondary || '#f97316',
-        '--color-accent': colors.accent || '#111827',
+        '--color-primary': colors.primary || '#3a6186',
+        '--color-secondary': colors.secondary || '#e8985e',
+        '--color-accent': colors.accent || '#1a1a2e',
       } : {}}
     >
       <Header />
-      <main className="flex-grow">
+      <main className="flex-grow pt-[72px]">
         {children}
       </main>
       <Footer />

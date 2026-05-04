@@ -6,10 +6,10 @@ export default function Home({ page, settings }) {
   return (
     <Layout>
       <Head>
-        <title>{`${settings?.siteTitle || 'PawFresh'} | Premium Pet Nutrition`}</title>
+        <title>{`${settings?.siteTitle || 'Agoura Feed'} | Premium Pet Feed & Supplies`}</title>
         <meta name="description" content={settings?.siteTagline || 'Premium pet nutrition.'} />
       </Head>
-      <main className="bg-white">
+      <main className="bg-[#FDFCFA]">
         <SectionRenderer sections={page?.sections} settings={settings} />
       </main>
     </Layout>

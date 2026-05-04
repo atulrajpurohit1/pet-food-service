@@ -137,6 +137,7 @@
         h += repeater('Cards', d.items, idx, [
           { key: 'title', label: 'Title', type: 'text' },
           { key: 'icon', label: 'Icon (emoji)', type: 'text' },
+          { key: 'image', label: 'Image', type: 'image' },
           { key: 'description', label: 'Description', type: 'textarea' },
         ], 'Card');
         break;
@@ -258,7 +259,7 @@
       if (type === 'team') template = { name: '', role: '', image: '' };
       else if (type === 'testimonials') template = { name: '', role: '', quote: '', image: '' };
       else if (type === 'categories_grid') template = { name: '', subtitle: '', image: '' };
-      else template = { title: '', icon: '', description: '' };
+      else template = { title: '', icon: '', image: '', description: '' };
       sections[idx].data.items.push(template);
       save(); render();
     });

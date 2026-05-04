@@ -3,13 +3,13 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const SettingsContext = createContext();
 
 const defaultSettings = {
-  siteTitle: 'PAWFRESH',
-  siteTagline: 'Premium Pet Nutrition',
+  siteTitle: 'Agoura Feed',
+  siteTagline: 'Premium Pet Feed & Supplies',
   logoUrl: '',
   colors: {
-    primary: '#16a34a',
-    secondary: '#f97316',
-    accent: '#1A1A1A',
+    primary: '#3a6186',
+    secondary: '#89B4D4',
+    accent: '#e8985e',
   },
   menus: {
     header: [
@@ -23,11 +23,11 @@ const defaultSettings = {
   },
   socialLinks: [],
   contact: {
-    email: 'hello@pawfresh.com',
-    phone: '+1 (555) 000-PAWS',
-    address: '123 Pet Lane, Nutrition City',
+    email: 'agourafeed@yahoo.com',
+    phone: '(818) 889-1989',
+    address: '28327 Agoura Rd, Agoura Hills, CA 91301-2405',
   },
-  footerText: `© ${new Date().getFullYear()} PawFresh Pet Nutrition. Crafted with love.`,
+  footerText: `© ${new Date().getFullYear()} Agoura Feed. Crafted with love.`,
 };
 
 export function SettingsProvider({ children, initialSettings }) {

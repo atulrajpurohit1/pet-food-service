@@ -9,11 +9,11 @@ const DynamicPage = ({ page, settings }) => {
   return (
     <Layout>
       <Head>
-        <title>{`${page.title} | ${settings?.siteTitle || 'PawFresh'}`}</title>
+        <title>{`${page.title} | ${settings?.siteTitle || 'Agoura Feed'}`}</title>
         <meta name="description" content={settings?.siteTagline} />
       </Head>
 
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen bg-[#FDFCFA]">
         <SectionRenderer sections={page.sections} settings={settings} />
       </main>
     </Layout>

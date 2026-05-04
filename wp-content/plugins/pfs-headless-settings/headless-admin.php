@@ -1,6 +1,6 @@
 <?php
 /**
- * PFS Headless Admin — Centralized Control Panel
+ * Agoura Feed Headless Admin — Centralized Control Panel
  * 
  * Creates a top-level "Headless Control" sidebar menu with sub-pages
  * for managing all frontend content from one place.
@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 function pfs_ha_register_menus() {
     add_menu_page(
-        'Headless Control',
-        'Headless Control',
+        'Agoura Feed Control',
+        'Agoura Feed Control',
         'manage_options',
         'pfs-headless',
         'pfs_ha_render_dashboard',
@@ -103,7 +103,7 @@ function pfs_ha_render_dashboard() {
     ?>
     <div class="wrap pfs-ha-wrap">
         <div class="pfs-ha-topbar">
-            <h1>🏗️ Headless Control Hub</h1>
+            <h1>🏗️ Agoura Feed Control Hub</h1>
             <span class="pfs-ha-live-badge">● Live</span>
         </div>
         <p class="pfs-ha-subtitle">Manage your entire Next.js frontend from WordPress. Every change syncs instantly.</p>

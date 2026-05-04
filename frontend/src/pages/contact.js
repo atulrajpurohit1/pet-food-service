@@ -35,37 +35,76 @@ export default function Contact({ page, settings }) {
   return (
     <Layout>
       <Head>
-        <title>{`${heroData.title || 'Contact Us'} | ${settings?.siteTitle || 'PawFresh'}`}</title>
+        <title>{`${heroData.title || 'Contact Us'} | ${settings?.siteTitle || 'Agoura Feed'}`}</title>
       </Head>
-      <main className="bg-white min-h-screen">
-        {/* Hero from sections */}
-        <section className="py-24 relative overflow-hidden bg-gray-900">
-          {heroData.image && <img src={heroData.image} className="absolute inset-0 w-full h-full object-cover opacity-40" alt="Contact" />}
-          <div className="relative max-w-7xl mx-auto px-4 text-center">
-            <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight uppercase italic">{heroData.title || 'Contact Us'}</h1>
-            {heroData.subtitle && <p className="text-gray-300 font-bold uppercase tracking-widest text-xs max-w-2xl mx-auto leading-relaxed">{heroData.subtitle}</p>}
+      <main className="bg-[#FDFCFA] min-h-screen">
+        {/* Hero Banner */}
+        <section className="relative py-24 md:py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#252542] to-[#1a1a2e]" />
+          {heroData.image && <img src={heroData.image} className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity" alt="Contact" />}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#3a6186]/10 rounded-full blur-[120px] pointer-events-none" />
+          <div className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 text-center">
+            <h1 
+              className="text-[40px] md:text-[56px] font-bold text-white mb-4 tracking-[-0.03em]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              {heroData.title || 'Contact Us'}
+            </h1>
+            {heroData.subtitle && (
+              <p className="text-white/50 text-[15px] max-w-xl mx-auto leading-[1.7]">{heroData.subtitle}</p>
+            )}
           </div>
         </section>
 
-        <div className="max-w-7xl mx-auto px-4 py-32 flex flex-col lg:flex-row gap-20">
+        {/* Form + Contact Info */}
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-20 md:py-28 flex flex-col lg:flex-row gap-12 lg:gap-20">
           {/* Contact Form */}
-          <div className="flex-1 space-y-12">
-            <div className="space-y-4">
-              <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight italic">Send us a Message</h2>
-              <p className="text-gray-500 font-medium italic">We typically respond within 24 hours.</p>
+          <div className="flex-1 space-y-8">
+            <div className="space-y-3">
+              <h2 
+                className="text-[26px] md:text-[32px] font-bold text-[#1a1a2e] tracking-[-0.03em]"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
+                Send us a Message
+              </h2>
+              <p className="text-[#1a1a2e]/40 text-[15px]">We typically respond within 24 hours.</p>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="text" name="name" placeholder="Full Name" required className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
-                <input type="email" name="email" placeholder="Email Address" required className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <input 
+                  type="text" name="name" placeholder="Full Name" required 
+                  className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-2xl px-5 py-4 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/25" 
+                />
+                <input 
+                  type="email" name="email" placeholder="Email Address" required 
+                  className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-2xl px-5 py-4 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/25" 
+                />
               </div>
-              <input type="text" name="subject" placeholder="Subject" className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
-              <textarea name="message" placeholder="Message" rows="6" required className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 font-bold text-sm focus:ring-2 focus:ring-primary outline-none transition-all resize-none"></textarea>
-              <button disabled={loading} type="submit" className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-primary transition-all shadow-xl shadow-gray-200">
+              <input 
+                type="text" name="subject" placeholder="Subject" 
+                className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-2xl px-5 py-4 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/25" 
+              />
+              <textarea 
+                name="message" placeholder="Your message..." rows="6" required 
+                className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-2xl px-5 py-4 text-[14px] font-medium outline-none transition-all resize-none placeholder:text-[#1a1a2e]/25"
+              ></textarea>
+              <button 
+                disabled={loading} 
+                type="submit" 
+                className="w-full bg-[#1a1a2e] text-white py-4 rounded-2xl text-[14px] font-semibold hover:bg-[#3a6186] transition-all duration-400 shadow-lg shadow-[#1a1a2e]/10 disabled:opacity-60"
+              >
                 {loading ? 'Sending...' : 'Send Message'}
               </button>
-              {status === 'success' && <p className="bg-green-50 text-green-600 p-4 rounded-xl text-center font-bold text-sm">✨ Message sent successfully!</p>}
-              {status === 'error' && <p className="bg-red-50 text-red-600 p-4 rounded-xl text-center font-bold text-sm">❌ Something went wrong. Please try again.</p>}
+              {status === 'success' && (
+                <div className="bg-[#3a6186]/8 text-[#3a6186] p-4 rounded-xl text-center text-[14px] font-medium">
+                  ✨ Message sent successfully!
+                </div>
+              )}
+              {status === 'error' && (
+                <div className="bg-red-50 text-red-500 p-4 rounded-xl text-center text-[14px] font-medium">
+                  Something went wrong. Please try again.
+                </div>
+              )}
             </form>
           </div>
           {/* Contact Info from sections */}
