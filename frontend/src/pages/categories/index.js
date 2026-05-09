@@ -1,6 +1,6 @@
-import Layout from '../components/Layout';
+import Layout from '../../components/Layout';
 import Head from 'next/head';
-import SectionRenderer from '../components/SectionRenderer';
+import SectionRenderer from '../../components/SectionRenderer';
 
 export default function Categories({ page, settings }) {
   return (

@@ -36,10 +36,9 @@ export function SettingsProvider({ children, initialSettings }) {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://localhost:8882').replace(/\/$/, '');
-        const apiUrl = `${wpUrl}/wp-json/headless/v1/site`;
+        const apiUrl = '/wp-proxy/wp-json/headless/v1/site';
         
-        console.log(`[SettingsContext] Fetching from: ${apiUrl}`);
+        console.log(`[SettingsContext] Fetching through proxy: ${apiUrl}`);
         
         const res = await fetch(apiUrl);
         if (res.ok) {

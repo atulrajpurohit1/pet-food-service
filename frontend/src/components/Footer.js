@@ -10,7 +10,7 @@ const getSocialIcon = (platform) => {
 };
 
 export default function Footer() {
-  const { siteTitle, contact } = useSettings();
+  const { siteTitle, contact, socialLinks } = useSettings();
 
   return (
     <footer className="relative bg-[#1a1a2e] text-white overflow-hidden">
@@ -27,7 +27,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 mb-16">
             
             {/* Brand Column */}
-            <div className="md:col-span-4 space-y-6">
+            <div className="md:col-span-6 lg:col-span-4 space-y-6">
               <Link href="/" className="inline-flex items-baseline gap-1.5 group">
                 <span 
                   className="text-[#89B4D4] font-bold text-[24px] tracking-[-0.03em] transition-colors group-hover:text-white"
@@ -45,9 +45,19 @@ export default function Footer() {
               <p className="text-white/40 text-[14px] leading-relaxed max-w-[280px]">
                 Premium pet nutrition crafted with care. Healthy food for happy pets since 2020.
               </p>
-              {/* Social icons */}
               <div className="flex gap-2 pt-2">
-                {['Instagram', 'Twitter', 'Facebook'].map(p => (
+                {(socialLinks || []).map(social => (
+                  <a 
+                    key={social.platform} 
+                    href={social.url || '#'} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-white/40 hover:bg-[#3a6186]/30 hover:text-[#89B4D4] transition-all duration-300"
+                  >
+                    {getSocialIcon(social.platform)}
+                  </a>
+                ))}
+                {(!socialLinks || socialLinks.length === 0) && ['Instagram', 'Twitter', 'Facebook'].map(p => (
                   <a 
                     key={p} 
                     href="#" 
@@ -60,7 +70,7 @@ export default function Footer() {
             </div>
 
             {/* Quick Links */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-3 lg:col-span-2">
               <h3 className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.15em] mb-6">Navigate</h3>
               <ul className="space-y-3">
                 {[
@@ -79,41 +89,51 @@ export default function Footer() {
             </div>
 
             {/* Categories */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-3 lg:col-span-2">
               <h3 className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.15em] mb-6">Shop</h3>
               <ul className="space-y-3">
-                {['Dog Food', 'Cat Food', 'Treats & Chews', 'Supplements'].map(cat => (
-                  <li key={cat}>
-                    <Link href="/categories" className="text-white/50 hover:text-white text-[14px] transition-colors duration-300">
-                      {cat}
-                    </Link>
-                  </li>
-                ))}
+                {['Dog Food', 'Cat Food', 'Treats & Chews', 'Supplements'].map(cat => {
+                  let slug = cat.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                  if (cat === 'Treats & Chews') slug = 'treats';
+                  return (
+                    <li key={cat}>
+                      <Link href={`/categories/${slug}`} className="text-white/50 hover:text-white text-[14px] transition-colors duration-300">
+                        {cat}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
             {/* Contact Info */}
-            <div className="md:col-span-4">
+            <div className="md:col-span-6 lg:col-span-4">
               <h3 className="text-[11px] font-semibold text-white/30 uppercase tracking-[0.15em] mb-6">Get in Touch</h3>
               <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 group">
+                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0 group-hover:text-[#89B4D4] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <span className="text-white/50 text-[14px]">{contact?.phone || '(818) 889-1989'}</span>
+                  <a href={`tel:${contact?.phone || '(818) 889-1989'}`} className="text-white/50 text-[14px] hover:text-white transition-colors">
+                    {contact?.phone || '(818) 889-1989'}
+                  </a>
                 </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 group">
+                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0 group-hover:text-[#89B4D4] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-white/50 text-[14px]">{contact?.email || 'agourafeed@yahoo.com'}</span>
+                  <a href={`mailto:${contact?.email || 'agourafeed@yahoo.com'}`} className="text-white/50 text-[14px] hover:text-white transition-colors">
+                    {contact?.email || 'agourafeed@yahoo.com'}
+                  </a>
                 </li>
-                <li className="flex items-start gap-3">
-                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <li className="flex items-start gap-3 group">
+                  <svg className="w-4 h-4 text-[#89B4D4]/60 mt-0.5 flex-shrink-0 group-hover:text-[#89B4D4] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="text-white/50 text-[14px] leading-relaxed">{contact?.address || '28327 Agoura Rd, Agoura Hills, CA 91301-2405'}</span>
+                  <span className="text-white/50 text-[14px] leading-relaxed group-hover:text-white transition-colors">
+                    {contact?.address || '28327 Agoura Rd, Agoura Hills, CA 91301-2405'}
+                  </span>
                 </li>
               </ul>
             </div>

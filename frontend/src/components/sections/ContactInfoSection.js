@@ -30,13 +30,23 @@ export default function ContactInfoSection({ data }) {
           Contact Info
         </h3>
         {items.map((item, i) => (
-          <div key={i} className="flex items-start gap-4">
-            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#3a6186]/8 text-[#3a6186] flex-shrink-0">
+          <div key={i} className="flex items-start gap-4 group">
+            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#3a6186]/8 text-[#3a6186] flex-shrink-0 group-hover:bg-[#3a6186] group-hover:text-white transition-all duration-300">
               {item.icon}
             </div>
             <div>
               <p className="text-[11px] text-[#1a1a2e]/30 font-semibold uppercase tracking-[0.1em] mb-1">{item.label}</p>
-              <p className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed">{item.value}</p>
+              {item.label === 'Phone' ? (
+                <a href={`tel:${item.value}`} className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed hover:text-[#3a6186] transition-colors">
+                  {item.value}
+                </a>
+              ) : item.label === 'Email' ? (
+                <a href={`mailto:${item.value}`} className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed hover:text-[#3a6186] transition-colors">
+                  {item.value}
+                </a>
+              ) : (
+                <p className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed">{item.value}</p>
+              )}
             </div>
           </div>
         ))}

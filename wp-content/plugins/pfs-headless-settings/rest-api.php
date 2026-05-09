@@ -10,16 +10,70 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Handle OPTIONS preflight requests as early as possible.
+ */
+if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+	add_action( 'plugins_loaded', function() {
+		$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+		$frontend_url = get_option( 'pfs_frontend_url', 'http://localhost:3000' );
+		$allowed_origins = [
+			untrailingslashit( $frontend_url ),
+			'http://localhost:3000',
+			'http://localhost:3001',
+		];
+
+		if ( in_array( untrailingslashit( $origin ), $allowed_origins ) || empty( $origin ) ) {
+			header( 'Access-Control-Allow-Origin: ' . ( $origin ?: '*' ) );
+		} else {
+			header( 'Access-Control-Allow-Origin: ' . untrailingslashit( $frontend_url ) );
+		}
+
+		header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE' );
+		header( 'Access-Control-Allow-Credentials: true' );
+		header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With' );
+		header( 'Access-Control-Max-Age: 86400' );
+		status_header( 200 );
+		exit;
+	}, 1 );
+}
+
+/**
  * Enable CORS globally for Headless frontend.
  */
+add_filter( 'rest_allowed_origins', function( $allowed_origins ) {
+	$frontend_url = get_option( 'pfs_frontend_url', 'http://localhost:3000' );
+	$allowed_origins[] = untrailingslashit( $frontend_url );
+	$allowed_origins[] = 'http://localhost:3000';
+	$allowed_origins[] = 'http://localhost:3001';
+	
+	if ( isset( $_SERVER['HTTP_ORIGIN'] ) ) {
+		$allowed_origins[] = $_SERVER['HTTP_ORIGIN'];
+	}
+	
+	return array_unique( $allowed_origins );
+} );
+
 add_action( 'rest_api_init', function() {
 	remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 	add_filter( 'rest_pre_serve_request', function( $value ) {
+		$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 		$frontend_url = get_option( 'pfs_frontend_url', 'http://localhost:3000' );
-		header( 'Access-Control-Allow-Origin: ' . untrailingslashit( $frontend_url ) );
+		
+		$allowed_origins = [
+			untrailingslashit( $frontend_url ),
+			'http://localhost:3000',
+			'http://localhost:3001',
+		];
+
+		if ( in_array( untrailingslashit( $origin ), $allowed_origins ) || empty( $origin ) ) {
+			header( 'Access-Control-Allow-Origin: ' . ( $origin ?: '*' ) );
+		} else {
+			header( 'Access-Control-Allow-Origin: ' . untrailingslashit( $frontend_url ) );
+		}
+
 		header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE' );
 		header( 'Access-Control-Allow-Credentials: true' );
-		header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce' );
+		header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-Requested-With' );
 
 		if ( 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
 			status_header( 200 );
@@ -27,7 +81,7 @@ add_action( 'rest_api_init', function() {
 		}
 
 		return $value;
-	});
+	}, 99 );
 }, 15 );
 
 function pfs_hs_register_rest_route() {
@@ -175,14 +229,14 @@ function pfs_hs_rest_get_site_data( WP_REST_Request $request ) {
 }
 
 function pfs_hs_rest_post_contact( WP_REST_Request $request ) {
-	$params = $request->get_json_params();
+	$params = $request->get_params();
 
 	$name    = sanitize_text_field( $params['name'] ?? '' );
 	$email   = sanitize_email( $params['email'] ?? '' );
 	$subject = sanitize_text_field( $params['subject'] ?? '' );
 	$message = sanitize_textarea_field( $params['message'] ?? '' );
 
-	if ( empty( $name ) || empty( $email ) || empty( $message ) ) {
+	if ( empty( $name ) || empty( $email ) || empty( $subject ) || empty( $message ) ) {
 		return new WP_Error( 'missing_fields', 'Please fill in all required fields.', [ 'status' => 400 ] );
 	}
 
@@ -199,6 +253,10 @@ function pfs_hs_rest_post_contact( WP_REST_Request $request ) {
 
 	if ( is_wp_error( $post_id ) ) {
 		return $post_id;
+	}
+
+	if ( ! $post_id ) {
+		return new WP_Error( 'insert_failed', 'Could not save your message. Please try again later.', [ 'status' => 500 ] );
 	}
 
 	return new WP_REST_Response( [
@@ -245,11 +303,6 @@ function pfs_hs_rest_get_settings( WP_REST_Request $request ) {
 	$etag = md5( wp_json_encode( $data ) );
 	$response->header( 'ETag', '"' . $etag . '"' );
 	$response->header( 'Cache-Control', 'public, max-age=60, stale-while-revalidate=300' );
-
-	$frontend_url = get_option( 'pfs_frontend_url', '' );
-	if ( $frontend_url ) {
-		$response->header( 'Access-Control-Allow-Origin', untrailingslashit( $frontend_url ) );
-	}
 
 	return $response;
 }

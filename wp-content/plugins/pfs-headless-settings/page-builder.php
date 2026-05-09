@@ -205,7 +205,7 @@ function pfs_pb_get_defaults_for_slug( $slug ) {
                     'tag'           => '',
                     'title'         => 'Our Story',
                     'body'          => "It all started with our own pets. We wanted to give them the best nutrition possible, but couldn't find anything on the market that met our standards. So, we decided to make our own. Using fresh, organic ingredients and working with veterinary experts.",
-                    'image'         => 'https://images.unsplash.com/photo-1522276493077-9fe5ad01add4?auto=format&fit=crop&q=80&w=1200',
+                    'image'         => 'https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=1200',
                     'imagePosition' => 'left',
                     'linkLabel'     => 'Contact Us Today',
                     'linkHref'      => '/contact',

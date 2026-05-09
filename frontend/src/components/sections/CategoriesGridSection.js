@@ -18,12 +18,12 @@ export default function CategoriesGridSection({ data }) {
             <div className="w-12 h-[2px] bg-[#3a6186]/30 mx-auto mt-6" />
           </div>
         )}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((cat, i) => (
             <Link 
-              href="/categories" 
+              href={`/categories/${cat.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '')}`} 
               key={i} 
-              className="group card-hover bg-white rounded-[24px] border border-[#e8e4de]/60 overflow-hidden"
+              className="group card-hover bg-white rounded-[24px] border border-[#e8e4de]/60 overflow-hidden block cursor-pointer"
             >
               <div className="aspect-square overflow-hidden">
                 <img 

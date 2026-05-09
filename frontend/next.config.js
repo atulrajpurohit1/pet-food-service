@@ -4,18 +4,39 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: 'https',
+        hostname: '**.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.wp.build',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: 'le-cdn.hibuwebsites.com',
       },
       {
         protocol: 'https',
-        hostname: 'mratulrajpurohit1-qmtif-studio.wp.build',
+        hostname: '**.hibuwebsites.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.wordpress.com',
       },
     ],
+  },
+  async rewrites() {
+    const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://localhost:8882').replace(/\/$/, '');
+    return [
+      {
+        source: '/wp-proxy/:path*',
+        destination: `${wpUrl}/:path*`,
+      },
+    ];
   },
 };
 

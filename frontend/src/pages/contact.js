@@ -20,16 +20,26 @@ export default function Contact({ page, settings }) {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
     try {
-      const wpUrl = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://localhost:8882').replace(/\/$/, '');
-      const res = await fetch(`${wpUrl}/wp-json/headless/v1/contact`, {
+      const res = await fetch('/wp-proxy/wp-json/headless/v1/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        mode: 'cors',
         body: JSON.stringify(data),
       });
-      if (res.ok) { setStatus('success'); e.target.reset(); }
-      else { setStatus('error'); }
-    } catch { setStatus('error'); }
-    finally { setLoading(false); }
+      const result = await res.json().catch(() => ({}));
+      if (res.ok) { 
+        setStatus('success'); 
+        e.target.reset(); 
+      } else { 
+        console.error('Contact form submission failed:', result);
+        setStatus('error'); 
+      }
+    } catch (err) { 
+      console.error('Contact form network error:', err);
+      setStatus('error'); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   return (
@@ -81,7 +91,7 @@ export default function Contact({ page, settings }) {
                 />
               </div>
               <input 
-                type="text" name="subject" placeholder="Subject" 
+                type="text" name="subject" placeholder="Subject" required 
                 className="w-full bg-[#f7f5f2] border border-[#e8e4de]/60 rounded-2xl px-5 py-4 text-[14px] font-medium outline-none transition-all placeholder:text-[#1a1a2e]/25" 
               />
               <textarea 

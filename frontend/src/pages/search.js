@@ -69,7 +69,7 @@ export default function SearchResults({ siteData }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {results.map((item) => (
                 <Link 
-                  href={item.type === 'product' ? `/categories` : (item.slug === 'home' ? '/' : `/${item.slug}`)} 
+                  href={item.type === 'product' ? `/product/${item.slug}` : (item.slug === 'home' ? '/' : `/${item.slug}`)} 
                   key={`${item.type}-${item.id}`} 
                   className="group card-hover bg-white rounded-[24px] overflow-hidden border border-[#e8e4de]/60"
                 >
