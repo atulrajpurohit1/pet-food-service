@@ -180,9 +180,10 @@ function pfs_hs_rest_get_site_data( WP_REST_Request $request ) {
 	foreach ( $products_query->posts as $product ) {
 		$products[] = [
 			'id'    => $product->ID,
-			'title' => $product->post_title,
-			'slug'  => $product->post_name,
-			'price' => get_post_meta( $product->ID, '_price', true ),
+			'title'   => $product->post_title,
+			'slug'    => $product->post_name,
+			'content' => apply_filters( 'the_content', $product->post_content ),
+			'price'   => get_post_meta( $product->ID, '_price', true ),
 			'image' => get_the_post_thumbnail_url( $product, 'large' ),
 		];
 	}

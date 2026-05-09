@@ -138,16 +138,45 @@ export async function getStaticPaths() {
     const res = await fetch(`${wpUrl}/wp-json/headless/v1/site`);
     const data = await res.json();
     
-    // Find categories grid items to generate paths
-    const homePage = data.pages.find(p => p.slug === 'home');
-    const catGrid = homePage?.sections?.find(s => s.type === 'categories_grid');
-    const categories = catGrid?.data?.items || [];
+    let allCatItems = [];
+    let allCardItems = [];
+
+    // Collect all grid items from all pages
+    data.pages.forEach(p => {
+      const catGrids = p.sections?.filter(s => s.type === 'categories_grid') || [];
+      catGrids.forEach(grid => {
+        if (grid.data?.items) {
+          allCatItems = [...allCatItems, ...grid.data.items];
+        }
+      });
+
+      const cardGrids = p.sections?.filter(s => s.type === 'cards_grid') || [];
+      cardGrids.forEach(grid => {
+        if (grid.data?.items) {
+          allCardItems = [...allCardItems, ...grid.data.items];
+        }
+      });
+    });
     
-    const paths = categories.map(cat => ({
+    const catPaths = allCatItems.map(cat => ({
       params: { 
-        slug: cat.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '') 
+        slug: (cat.name || '').toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '') 
       },
-    }));
+    })).filter(p => p.params.slug);
+
+    const cardPaths = allCardItems.map(card => ({
+      params: { 
+        slug: (card.title || 'categories').toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '') 
+      },
+    })).filter(p => p.params.slug);
+
+    // Remove duplicates
+    const uniqueSlugs = new Set();
+    const paths = [...catPaths, ...cardPaths].filter(p => {
+      if (uniqueSlugs.has(p.params.slug)) return false;
+      uniqueSlugs.add(p.params.slug);
+      return true;
+    });
 
     return { paths, fallback: 'blocking' };
   } catch (error) {
@@ -162,14 +191,50 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`${wpUrl}/wp-json/headless/v1/site`);
     const data = await res.json();
     
-    const homePage = data.pages.find(p => p.slug === 'home');
-    const catGrid = homePage?.sections?.find(s => s.type === 'categories_grid');
-    const categories = catGrid?.data?.items || [];
+    let allCatItems = [];
+    let allCardItems = [];
+
+    data.pages.forEach(p => {
+      const catGrids = p.sections?.filter(s => s.type === 'categories_grid') || [];
+      catGrids.forEach(grid => {
+        if (grid.data?.items) {
+          allCatItems = [...allCatItems, ...grid.data.items];
+        }
+      });
+
+      const cardGrids = p.sections?.filter(s => s.type === 'cards_grid') || [];
+      cardGrids.forEach(grid => {
+        if (grid.data?.items) {
+          allCardItems = [...allCardItems, ...grid.data.items];
+        }
+      });
+    });
     
-    const category = categories.find(cat => {
+    let category = allCatItems.find(cat => {
+      if (!cat.name) return false;
       const catSlug = cat.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '');
       return catSlug === slug;
     });
+
+    if (!category) {
+      const card = allCardItems.find(c => {
+        if (!c.title) return false;
+        const cSlug = c.title.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        return cSlug === slug;
+      });
+      
+      if (card) {
+        let defaultImage = card.image;
+        if (!defaultImage && card.title?.toUpperCase() === 'ORGANIC FOOD') defaultImage = '/organic-food.png';
+        if (!defaultImage && card.title?.toUpperCase() === 'TOYS') defaultImage = '/toys.png';
+        
+        category = {
+          name: card.title,
+          subtitle: card.description,
+          image: defaultImage || 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&q=80&w=600'
+        };
+      }
+    }
 
     if (!category) {
       return { notFound: true };

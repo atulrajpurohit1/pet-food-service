@@ -29,27 +29,35 @@ export default function ContactInfoSection({ data }) {
         >
           Contact Info
         </h3>
-        {items.map((item, i) => (
-          <div key={i} className="flex items-start gap-4 group">
-            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#3a6186]/8 text-[#3a6186] flex-shrink-0 group-hover:bg-[#3a6186] group-hover:text-white transition-all duration-300">
-              {item.icon}
-            </div>
-            <div>
-              <p className="text-[11px] text-[#1a1a2e]/30 font-semibold uppercase tracking-[0.1em] mb-1">{item.label}</p>
-              {item.label === 'Phone' ? (
-                <a href={`tel:${item.value}`} className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed hover:text-[#3a6186] transition-colors">
+        {items.map((item, i) => {
+          const isLink = item.label === 'Phone' || item.label === 'Email' || item.label === 'Address';
+          let href;
+          if (item.label === 'Phone') href = `tel:${item.value}`;
+          else if (item.label === 'Email') href = `mailto:${item.value}`;
+          else if (item.label === 'Address') href = `https://maps.google.com/?q=${encodeURIComponent(item.value)}`;
+
+          const Wrapper = isLink ? 'a' : 'div';
+          const targetProps = item.label === 'Address' ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+          
+          return (
+            <Wrapper 
+              key={i} 
+              href={href}
+              {...targetProps}
+              className={`flex items-start gap-4 group ${isLink ? 'cursor-pointer hover:opacity-80' : ''}`}
+            >
+              <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#3a6186]/8 text-[#3a6186] flex-shrink-0 group-hover:bg-[#3a6186] group-hover:text-white transition-all duration-300">
+                {item.icon}
+              </div>
+              <div>
+                <p className="text-[11px] text-[#1a1a2e]/30 font-semibold uppercase tracking-[0.1em] mb-1">{item.label}</p>
+                <p className={`text-[15px] font-semibold text-[#1a1a2e] leading-relaxed ${isLink ? 'group-hover:text-[#3a6186] transition-colors' : ''}`}>
                   {item.value}
-                </a>
-              ) : item.label === 'Email' ? (
-                <a href={`mailto:${item.value}`} className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed hover:text-[#3a6186] transition-colors">
-                  {item.value}
-                </a>
-              ) : (
-                <p className="text-[15px] font-semibold text-[#1a1a2e] leading-relaxed">{item.value}</p>
-              )}
-            </div>
-          </div>
-        ))}
+                </p>
+              </div>
+            </Wrapper>
+          );
+        })}
       </div>
     </div>
   );
