@@ -1,18 +1,25 @@
+import { useSettings } from '../../context/SettingsContext';
+
 export default function ContactInfoSection({ data }) {
-  if (!data) return null;
+  const { contact } = useSettings();
+  if (!data && !contact) return null;
+
+  const phoneValue = contact?.phone || data?.phone || '(818) 889-1989';
+  const emailValue = contact?.email || data?.email || 'agourafeed@yahoo.com';
+  const addressValue = contact?.address || data?.address || '28327 Agoura Rd, Agoura Hills, CA 91301-2405';
 
   const items = [
-    { label: 'Phone', value: data.phone, icon: (
+    { label: 'Phone', value: phoneValue, icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
       </svg>
     )},
-    { label: 'Email', value: data.email, icon: (
+    { label: 'Email', value: emailValue, icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
       </svg>
     )},
-    { label: 'Address', value: data.address, icon: (
+    { label: 'Address', value: addressValue, icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -32,9 +39,14 @@ export default function ContactInfoSection({ data }) {
         {items.map((item, i) => {
           const isLink = item.label === 'Phone' || item.label === 'Email' || item.label === 'Address';
           let href;
-          if (item.label === 'Phone') href = `tel:${item.value}`;
-          else if (item.label === 'Email') href = `mailto:${item.value}`;
-          else if (item.label === 'Address') href = `https://maps.google.com/?q=${encodeURIComponent(item.value)}`;
+          if (item.label === 'Phone') {
+            const sanitizedPhone = item.value.replace(/[^\d+]/g, '');
+            href = `tel:${sanitizedPhone}`;
+          } else if (item.label === 'Email') {
+            href = `mailto:${item.value.trim()}`;
+          } else if (item.label === 'Address') {
+            href = `https://maps.google.com/?q=${encodeURIComponent(item.value)}`;
+          }
 
           const Wrapper = isLink ? 'a' : 'div';
           const targetProps = item.label === 'Address' ? { target: '_blank', rel: 'noopener noreferrer' } : {};
