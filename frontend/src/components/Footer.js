@@ -9,8 +9,12 @@ const getSocialIcon = (platform) => {
   return <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.826a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>;
 };
 
+const DEFAULT_LOGO = '/agoura-feed-logo.png';
+
 export default function Footer() {
-  const { siteTitle, contact, socialLinks } = useSettings();
+  const { siteTitle, contact, socialLinks, logoUrl } = useSettings();
+
+  const resolvedLogo = logoUrl || DEFAULT_LOGO;
 
   return (
     <footer className="relative bg-[#1a1a2e] text-white overflow-hidden">
@@ -28,19 +32,13 @@ export default function Footer() {
             
             {/* Brand Column */}
             <div className="md:col-span-6 lg:col-span-4 space-y-6">
-              <Link href="/" className="inline-flex items-baseline gap-1.5 group">
-                <span 
-                  className="text-[#89B4D4] font-bold text-[24px] tracking-[-0.03em] transition-colors group-hover:text-white"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                >
-                  Agoura
-                </span>
-                <span 
-                  className="text-[#89B4D4]/60 font-medium text-[16px] italic tracking-[-0.01em] transition-colors group-hover:text-[#89B4D4]"
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                >
-                  Feed
-                </span>
+              <Link href="/" className="inline-flex items-center group">
+                <img 
+                  src={resolvedLogo}
+                  alt={siteTitle || 'Agoura Feed'}
+                  className="h-[62px] w-auto object-contain transition-transform duration-300 group-hover:scale-105 select-none"
+                  draggable={false}
+                />
               </Link>
               <p className="text-white/40 text-[14px] leading-relaxed max-w-[280px]">
                 Premium pet nutrition crafted with care. Healthy food for happy pets since 2020.
@@ -103,7 +101,7 @@ export default function Footer() {
                   if (cat === 'Treats & Chews') slug = 'treats';
                   return (
                     <li key={cat}>
-                      <Link href={`/categories/${slug}`} className="text-white/50 hover:text-white text-[14px] transition-colors duration-300">
+                        <Link href={`/categories/${slug}`} className="text-white/50 hover:text-white text-[14px] transition-colors duration-300">
                         {cat}
                       </Link>
                     </li>
